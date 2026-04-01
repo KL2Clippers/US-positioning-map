@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US Air Purifier Matrix v6.0 — GLOBAL OPS</title>
+    <title>US Air Purifier Matrix v7.0 — GLOBAL OPS</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --text-muted: #64748b;
             --border: #cbd5e1; --accent: #2563eb;
-            --coway: #00d4aa; --levoit: #ef4444; --blueair: #3b82f6; --shark: #f59e0b; --rabbit: #8b5cf6;
+            --coway: #00d4aa; --levoit: #ef4444; --blueair: #3b82f6; --shark: #f59e0b;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; padding: 30px; min-height: 100vh; overflow-x: hidden; }
@@ -18,79 +18,76 @@
         .logo-section h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #1e293b; }
         .meta-info { text-align: right; font-size: 13px; color: var(--text-muted); font-weight: 600; }
 
-        /* Map System */
         .map-container {
-            width: 100%; height: 850px; background: var(--card); border: 2px solid #334155;
+            width: 100%; height: 880px; background: var(--card); border: 2px solid #334155;
             border-radius: 16px; position: relative; padding: 80px; box-shadow: 0 20px 40px rgba(0,0,0,0.08);
             margin: 0 auto; overflow: visible;
         }
 
-        /* Axis Lines */
         .axis-x-line { position: absolute; bottom: 80px; left: 80px; right: 80px; height: 3px; background: #334155; z-index: 5; }
         .axis-y-line { position: absolute; left: 80px; top: 80px; bottom: 80px; width: 3px; background: #334155; z-index: 5; }
         .axis-label { position: absolute; font-weight: 800; font-size: 13px; text-transform: uppercase; color: #334155; letter-spacing: 1px; }
         .label-y { left: 20px; top: 50%; transform: rotate(-90deg) translateX(50%); }
         .label-x { bottom: 30px; left: 50%; transform: translateX(-50%); }
 
-        /* Ticks (범위 확장) */
-        .tick { position: absolute; font-family: 'DM Mono'; font-size: 10px; font-weight: 700; color: #94a3b8; }
-        .tick-y { left: 50px; }
+        .tick { position: absolute; font-family: 'DM Mono'; font-size: 11px; font-weight: 700; color: #94a3b8; }
+        .tick-y { left: 45px; }
         .tick-x { bottom: 60px; }
 
-        /* Zones (구분 확실화) */
         .zone { position: absolute; display: flex; padding: 25px; font-size: 11px; font-weight: 800; text-transform: uppercase; pointer-events: none; border-radius: 20px; }
         .zone-premium { top: 80px; right: 80px; width: 45%; height: 45%; background: rgba(245, 158, 11, 0.05); border: 2px dashed rgba(245, 158, 11, 0.2); color: #d97706; justify-content: flex-end; align-items: flex-start; }
         .zone-value { bottom: 80px; left: 80px; width: 35%; height: 30%; background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.2); color: #059669; align-items: flex-end; }
 
-        /* Point Wrapper */
         .p-wrap { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 10; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .p-wrap:hover { z-index: 1000; }
 
-        /* Model Badge (이미지 포함) */
+        /* --- 제품 카드 (샘플과 동일하게 이미지 노출 강화) --- */
         .m-card {
-            width: 120px; background: #fff; border: 1px solid var(--border);
-            border-radius: 12px; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            width: 140px; background: #fff; border: 1.5px solid var(--border);
+            border-radius: 14px; padding: 10px; box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
-        .m-card img { width: 50px; height: 50px; object-fit: contain; }
-        .m-brand { font-size: 8px; font-weight: 800; text-transform: uppercase; }
-        .m-name { font-size: 10px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .m-price { font-size: 10px; font-weight: 700; color: var(--text-muted); font-family: 'DM Mono'; }
+        .m-card img { width: 85px; height: 85px; object-fit: contain; background: #fff; }
+        .m-brand-box { width: 100%; text-align: left; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+        .m-brand-name { font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        .m-name { font-size: 11px; font-weight: 700; color: #1e293b; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-price { font-size: 11px; font-weight: 800; color: var(--accent); align-self: flex-start; }
 
-        /* Pop-up Box (Malaysia Style - 100% 반영) */
+        /* --- 팝업 정보창 (Malaysia Style) --- */
         .info-box {
-            visibility: hidden; opacity: 0; position: absolute; left: 130px; top: -150px;
-            width: 290px; background: #fff; border-radius: 20px; padding: 0;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.25); border: 1px solid var(--border);
+            visibility: hidden; opacity: 0; position: absolute; left: 150px; top: -180px;
+            width: 320px; background: #fff; border-radius: 24px; padding: 0;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3); border: 1px solid var(--border);
             transition: 0.3s; z-index: 2000; pointer-events: none; overflow: hidden;
         }
         .p-wrap:hover .info-box { visibility: visible; opacity: 1; transform: translateX(15px); }
         
-        .info-header { padding: 15px 20px; background: #f8fafc; border-bottom: 1px solid var(--border); }
-        .info-header .brand-tag { background: var(--accent); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; }
-        .info-header h3 { font-size: 18px; font-weight: 800; margin-top: 8px; color: #0f172a; }
+        .info-header { padding: 20px; background: #f8fafc; border-bottom: 1px solid var(--border); position: relative; }
+        .info-header .brand-label { background: var(--accent); color: #fff; font-size: 10px; font-weight: 900; padding: 4px 12px; border-radius: 6px; text-transform: uppercase; }
+        .info-header h3 { font-size: 22px; font-weight: 800; margin-top: 10px; color: #0f172a; }
 
-        .info-body { padding: 20px; }
-        .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .price-row .label { font-size: 12px; color: var(--text-muted); }
-        .price-row .value { font-size: 18px; font-weight: 800; color: var(--accent); }
+        .info-body { padding: 25px; }
+        .main-img-large { width: 100%; height: 180px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
+        
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 12px 15px; background: rgba(37, 99, 235, 0.05); border-radius: 12px; }
+        .price-row .label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .price-row .value { font-size: 20px; font-weight: 800; color: var(--accent); }
 
-        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .spec-item { background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center; }
-        .spec-item .val { display: block; font-size: 15px; font-weight: 800; color: #1e293b; }
-        .spec-item .lab { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .spec-item { background: #f1f5f9; padding: 14px; border-radius: 16px; text-align: center; }
+        .spec-item .val { display: block; font-size: 16px; font-weight: 800; color: #1e293b; }
+        .spec-item .lab { font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-top: 2px; }
 
-        .feature-title { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; }
-        .feature-list { list-style: none; font-size: 12px; color: #475569; }
-        .feature-list li { margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-        .feature-list li::before { content: "•"; color: var(--accent); font-weight: bold; }
+        .feature-list { list-style: none; font-size: 13px; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        .feature-list li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .feature-list li::before { content: ""; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
 
         /* Legend */
-        .legend-area { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .legend { display: flex; flex-wrap: wrap; gap: 15px; background: #fff; padding: 15px 30px; border-radius: 50px; border: 1px solid var(--border); }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #334155; }
-        .dot { width: 12px; height: 12px; border-radius: 3px; }
-        .footer-note { font-size: 11px; color: var(--text-muted); text-align: center; }
+        .legend-area { margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 20px; background: #fff; padding: 18px 40px; border-radius: 100px; border: 1.5px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #334155; }
+        .dot { width: 14px; height: 14px; border-radius: 4px; }
+        .footer-note { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.8; }
 
     </style>
 </head>
@@ -98,19 +95,19 @@
 
     <div class="header">
         <div class="logo-section">
-            <h1>US Air Purifier Matrix 2026 🇺🇸</h1>
-            <p>Portfolio Analysis: Coway Full Lineup vs Amazon Best Sellers Top 40</p>
+            <h1>US Air Purifier Matrix v7.0 🇺🇸</h1>
+            <p>Portfolio Analysis: Coway Full Lineup vs Market Best Sellers</p>
         </div>
         <div class="meta-info">
             분석 기간: 2025–2026<br>
-            Source: Amazon.com Best Sellers & Brand MSRP
+            기준 지표: AHAM Coverage (sq.ft) / MSRP (USD)
         </div>
     </div>
 
     <div class="map-container">
         <div class="axis-x-line"></div>
         <div class="axis-y-line"></div>
-        <div class="axis-label label-y">Price (MSRP USD) ▲</div>
+        <div class="axis-label label-y">Market Price (MSRP USD) ▲</div>
         <div class="axis-label label-x">Performance (Coverage sq.ft) ▶</div>
 
         <div class="tick tick-y" style="top: 80px;">$1,000</div>
@@ -120,67 +117,66 @@
         <div class="tick tick-x" style="left: 440px;">1,000</div>
         <div class="tick tick-x" style="right: 80px;">2,000+</div>
 
-        <div class="zone zone-premium">Premium / High-Coverage</div>
-        <div class="zone zone-value">Value / Entry Segment</div>
+        <div class="zone zone-premium">Premium Flagship</div>
+        <div class="zone zone-value">Value Segment</div>
 
         <script>
-            // --- 정밀 데이터셋 (Coway 전 모델 + Amazon Top 40) ---
-            const data = [
-                // Coway Full Lineup
-                { b: "Coway", n: "ProX", p: 999, c: 2148, x: 92, y: 12, img: "https://cowaymega.com/cdn/shop/files/ProX_White_Front_1000x1000.png", f: ["Dual Suction", "Dual HEPA", "Large Space"] },
-                { b: "Coway", n: "450", p: 799, c: 3285, x: 97, y: 24, img: "https://cowaymega.com/cdn/shop/files/Airmega_450_Front.png", f: ["HyperCaptive™", "Washable Pre-filter"] },
-                { b: "Coway", n: "400S", p: 749, c: 1560, x: 78, y: 28, img: "https://cowaymega.com/cdn/shop/products/400S_White_Front_1000x1000.png", f: ["Dual GreenHEPA", "Wi-Fi Control"] },
-                { b: "Coway", n: "350", p: 649, c: 2640, x: 88, y: 35, img: "https://cowaymega.com/cdn/shop/products/350_Front.png", f: ["HyperCaptive™", "All-in-one Filter"] },
-                { b: "Coway", n: "300S", p: 549, c: 1256, x: 65, y: 42, img: "https://cowaymega.com/cdn/shop/products/300S_White_Front_1000x1000.png", f: ["Classic Dual Suction", "GreenHEPA"] },
-                { b: "Coway", n: "250S", p: 449, c: 930, x: 55, y: 52, img: "https://cowaymega.com/cdn/shop/products/250S_Front_1000x1000.png", f: ["EZ-pull Filter", "Modern Design"] },
-                { b: "Coway", n: "160", p: 229, c: 214, x: 18, y: 72, img: "https://cowaymega.com/cdn/shop/products/160_White_Front.png", f: ["Cartridge System", "IF Design Award"] },
-                { b: "Coway", n: "150", p: 189, c: 214, x: 18, y: 78, img: "https://cowaymega.com/cdn/shop/products/150_White_Front_1000x1000.png", f: ["Amazon Bestseller", "Compact"] },
-                { b: "Coway", n: "100", p: 129, c: 810, x: 48, y: 85, img: "https://cowaymega.com/cdn/shop/files/Airmega_100_Front_1000x1000.png", f: ["Waffle Filter", "360 Suction"] },
-                { b: "Coway", n: "50", p: 99, c: 104, x: 12, y: 92, img: "https://cowaymega.com/cdn/shop/files/Airmega_50_Front.png", f: ["Ultra Compact", "Personal Purifier"] },
+            // --- 정밀 데이터 및 이미지 URL (Coway 전모델 필수 포함) ---
+            const dataset = [
+                // Coway Airmega
+                { b: "Coway", n: "ProX", p: 999, c: 2148, x: 92, y: 12, img: "https://cowaymega.com/cdn/shop/files/ProX_White_Front_1000x1000.png", f: ["Dual Suction", "GreenHEPA™", "Commercial Grade"] },
+                { b: "Coway", n: "450", p: 799, c: 3285, x: 97, y: 24, img: "https://cowaymega.com/cdn/shop/files/Airmega_450_Front.png", f: ["Large-scale Filtration", "Washable Pre-filter"] },
+                { b: "Coway", n: "400S", p: 749, c: 1560, x: 78, y: 30, img: "https://cowaymega.com/cdn/shop/products/400S_White_Front_1000x1000.png", f: ["HyperCaptive™", "Wi-Fi Connectivity"] },
+                { b: "Coway", n: "350", p: 649, c: 2640, x: 88, y: 38, img: "https://cowaymega.com/cdn/shop/products/350_Front.png", f: ["HyperCaptive™", "Modern Aesthetics"] },
+                { b: "Coway", n: "300S", p: 549, c: 1256, x: 68, y: 46, img: "https://cowaymega.com/cdn/shop/products/300S_White_Front_1000x1000.png", f: ["Dual Suction", "Smart Eco Mode"] },
+                { b: "Coway", n: "250S", p: 449, c: 930, x: 58, y: 55, img: "https://cowaymega.com/cdn/shop/products/250S_Front_1000x1000.png", f: ["EZ-pull Filter", "Slim Profile"] },
+                { b: "Coway", n: "Mighty", p: 229, c: 361, x: 32, y: 72, img: "https://cowaymega.com/cdn/shop/products/Mighty_White_Front_1000x1000.png", f: ["Wirecutter #1", "Ionizer Option"] },
+                { b: "Coway", n: "160", p: 229, c: 214, x: 18, y: 75, img: "https://cowaymega.com/cdn/shop/products/160_White_Front.png", f: ["Cartridge System", "iF Design"] },
+                { b: "Coway", n: "150", p: 189, c: 214, x: 18, y: 80, img: "https://cowaymega.com/cdn/shop/products/150_White_Front_1000x1000.png", f: ["Top Seller", "Compact Style"] },
+                { b: "Coway", n: "100", p: 129, c: 810, x: 48, y: 86, img: "https://cowaymega.com/cdn/shop/files/Airmega_100_Front_1000x1000.png", f: ["360° Suction", "H13 True HEPA"] },
+                { b: "Coway", n: "50", p: 99, c: 104, x: 12, y: 92, img: "https://cowaymega.com/cdn/shop/files/Airmega_50_Front.png", f: ["Personal Purifier", "Ultra Compact"] },
 
                 // Levoit (Best Sellers)
-                { b: "Levoit", n: "EverestAir", p: 499, c: 1395, x: 72, y: 48, img: "https://levoit.com/cdn/shop/files/EverestAir_1.png", f: ["Premium Performance", "APP Control"] },
-                { b: "Levoit", n: "Core 600S", p: 299, c: 635, x: 42, y: 68, img: "https://levoit.com/cdn/shop/products/Core600S_1.png", f: ["Smart Auto Mode", "VortexAir"] },
-                { b: "Levoit", n: "Core 400S", p: 219, c: 403, x: 32, y: 75, img: "https://levoit.com/cdn/shop/products/Core400S_1.png", f: ["Amazon #1", "Quiet Operation"] },
-                { b: "Levoit", n: "Core 300", p: 99, c: 219, x: 18, y: 88, img: "https://levoit.com/cdn/shop/products/Core300_1.png", f: ["Compact Value", "H13 True HEPA"] },
-                { b: "Levoit", n: "Core 200S", p: 89, c: 183, x: 14, y: 92, img: "https://levoit.com/cdn/shop/products/Core200S_1.png", f: ["Desktop Size", "Night Light"] },
+                { b: "Levoit", n: "EverestAir", p: 499, c: 1395, x: 74, y: 50, img: "https://levoit.com/cdn/shop/files/EverestAir_1.png", f: ["Premium Performance", "VortexAir 3.0"] },
+                { b: "Levoit", n: "Core 600S", p: 299, c: 635, x: 45, y: 68, img: "https://levoit.com/cdn/shop/products/Core600S_1.png", f: ["Smart Auto", "High Efficiency"] },
+                { b: "Levoit", n: "Core 400S", p: 219, c: 403, x: 35, y: 78, img: "https://levoit.com/cdn/shop/products/Core400S_1.png", f: ["Amazon #1 Best Seller"] },
+                { b: "Levoit", n: "Core 300", p: 99, c: 219, x: 20, y: 88, img: "https://levoit.com/cdn/shop/products/Core300_1.png", f: ["Global Best Seller"] },
+                { b: "Levoit", n: "Core 200S", p: 89, c: 183, x: 14, y: 92, img: "https://levoit.com/cdn/shop/products/Core200S_1.png", f: ["Smart Entry Model"] },
 
-                // Blueair & Shark
-                { b: "Blueair", n: "Protect 7770i", p: 639, c: 674, x: 45, y: 35, img: "https://www.blueair.com/dw/image/v2/BCHX_PRD/on/demandware.static/-/Sites-master-catalog-blueair/default/dw10d5f81f/images/hi-res/Protect_7770i.png", f: ["GermShield", "SpiralAir"] },
-                { b: "Shark", n: "NeverChange MAX", p: 399, c: 1400, x: 74, y: 58, img: "https://direct.sharkclean.com/cdn/shop/files/HP302_Shark_NeverChange_MAX.png", f: ["5yr Filter Life", "Odor Neutralizer"] },
-                { b: "Shark", n: "CleanSense 500", p: 199, c: 500, x: 38, y: 80, img: "https://direct.sharkclean.com/cdn/shop/products/SharkCleanSenseAirPurifier500.png", f: ["Auto Sense", "Competitive Price"] }
+                // Shark & Blueair
+                { b: "Shark", n: "NeverChange MAX", p: 399, c: 1400, x: 74, y: 60, img: "https://direct.sharkclean.com/cdn/shop/files/HP302_Shark_NeverChange_MAX.png", f: ["5yr Filter Life"] },
+                { b: "Blueair", n: "Protect 7770i", p: 639, c: 674, x: 50, y: 40, img: "https://www.blueair.com/dw/image/v2/BCHX_PRD/on/demandware.static/-/Sites-master-catalog-blueair/default/dw10d5f81f/images/hi-res/Protect_7770i.png", f: ["GermShield™"] }
             ];
 
             const colors = { Coway: "var(--coway)", Levoit: "var(--levoit)", Blueair: "var(--blueair)", Shark: "var(--shark)" };
 
-            data.forEach(m => {
+            dataset.forEach(m => {
                 document.write(`
                     <div class="p-wrap" style="left: ${m.x}%; top: ${m.y}%;">
-                        <div class="m-card" style="border-top: 3px solid ${colors[m.b]}">
-                            <img src="${m.img}" onerror="this.src='https://via.placeholder.com/50'">
-                            <span class="m-brand" style="color: ${colors[m.b]}">${m.b}</span>
+                        <div class="m-card" style="border-top: 3.5px solid ${colors[m.b]}">
+                            <div class="m-brand-box"><span class="m-brand" style="color: ${colors[m.b]}">${m.b}</span></div>
+                            <img src="${m.img}" onerror="this.src='https://via.placeholder.com/80?text=Purifier'">
                             <div class="m-name">${m.n}</div>
                             <div class="m-price">$${m.p}</div>
                         </div>
-                        <div class="info-box" style="border-top-color: ${colors[m.b]}">
+                        <div class="info-box" style="border-top: 8px solid ${colors[m.b]}">
                             <div class="info-header">
-                                <span class="brand-tag" style="background:${colors[m.b]}">${m.b} Intelligence</span>
+                                <span class="brand-label" style="background:${colors[m.b]}">${m.b} Executive Intel</span>
                                 <h3>${m.n}</h3>
                             </div>
                             <div class="info-body">
+                                <img src="${m.img}" class="main-img-large" onerror="this.src='https://via.placeholder.com/200'">
                                 <div class="price-row">
-                                    <span class="label">출시가격</span>
+                                    <span class="label">Launching MSRP</span>
                                     <span class="value">$${m.p}</span>
                                 </div>
                                 <div class="spec-grid">
-                                    <div class="spec-item"><span class="val">${m.c}</span><span class="lab">SQ.FT</span></div>
-                                    <div class="spec-item"><span class="val">${m.p > 500 ? 'Flagship' : 'Value'}</span><span class="lab">Tier</span></div>
+                                    <div class="spec-item"><span class="val">${m.c}</span><span class="lab">SQ.FT Coverage</span></div>
+                                    <div class="spec-item"><span class="val">${m.p > 500 ? 'Premium' : 'Value'}</span><span class="lab">Market Tier</span></div>
                                 </div>
-                                <div class="feature-title">핵심 기술 및 특징</div>
                                 <ul class="feature-list">
                                     ${m.f.map(feature => `<li>${feature}</li>`).join('')}
                                 </ul>
-                                <img src="${m.img}" style="width:100px; position:absolute; right:10px; bottom:20px; opacity:0.1; pointer-events:none;">
                             </div>
                         </div>
                     </div>
@@ -191,13 +187,14 @@
 
     <div class="legend-area">
         <div class="legend">
-            <div class="legend-item"><div class="dot" style="background: var(--coway);"></div> Coway (자사)</div>
-            <div class="legend-item"><div class="dot" style="background: var(--levoit);"></div> Levoit (경쟁)</div>
-            <div class="legend-item"><div class="dot" style="background: var(--blueair);"></div> Blueair (경쟁)</div>
-            <div class="legend-item"><div class="dot" style="background: var(--shark);"></div> Shark (경쟁)</div>
+            <div class="legend-item"><div class="dot" style="background: var(--coway);"></div> Coway ( 자사 풀 라인업 )</div>
+            <div class="legend-item"><div class="dot" style="background: var(--levoit);"></div> Levoit ( Amazon Best Sellers )</div>
+            <div class="legend-item"><div class="dot" style="background: var(--blueair);"></div> Blueair ( EU Comp )</div>
+            <div class="legend-item"><div class="dot" style="background: var(--shark);"></div> Shark ( Emerging Comp )</div>
         </div>
         <div class="footer-note">
-            * AHAM Verifide / 브랜드 제조사 공시 스펙 기준 | © 2026 GLOBAL OPS Executive Center
+            * 데이터 소스: Amazon.com 및 각 제조사 공식 홈페이지 기준 MSRP / AHAM Verifide Spec 분석<br>
+            © 2026 GLOBAL OPS Intelligence Matrix
         </div>
     </div>
 
