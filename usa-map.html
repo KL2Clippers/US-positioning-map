@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLOBAL OPS — US Market Positioning Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=DM+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --text-muted: #64748b;
+            --border: #e2e8f0; --accent: #4a9fff;
+            --coway: #00d4aa; --rabbitair: #a78bfa; --comp: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; padding: 40px; }
+        
+        .header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+        .header p { font-size: 14px; color: var(--text-muted); margin-top: 5px; }
+
+        /* Map Container */
+        .map-container {
+            width: 100%; height: 750px; background: var(--card); border: 1px solid var(--border);
+            border-radius: 24px; position: relative; padding: 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        /* Axis Lines */
+        .axis-x-line { position: absolute; bottom: 80px; left: 80px; right: 80px; height: 2px; background: #1e293b; z-index: 2; }
+        .axis-y-line { position: absolute; left: 80px; top: 80px; bottom: 80px; width: 2px; background: #1e293b; z-index: 2; }
+
+        /* Grid Labels */
+        .axis-label { position: absolute; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #1e293b; }
+        .label-y { left: 20px; top: 50%; transform: rotate(-90deg) translateX(50%); }
+        .label-x { bottom: 30px; left: 50%; transform: translateX(-50%); }
+
+        /* Background Zones */
+        .zone { position: absolute; display: flex; padding: 20px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: rgba(30,41,59,0.3); pointer-events: none; }
+        .zone-premium { top: 80px; right: 80px; width: 40%; height: 40%; background: rgba(255,179,64,0.03); border: 1px dashed rgba(255,179,64,0.2); border-radius: 16px; align-items: flex-start; justify-content: flex-end; }
+        .zone-value { bottom: 80px; left: 80px; width: 40%; height: 35%; background: rgba(0,212,170,0.03); border: 1px dashed rgba(0,212,170,0.2); border-radius: 16px; align-items: flex-end; justify-content: flex-start; }
+
+        /* Model Cards */
+        .model-card {
+            position: absolute; width: 155px; background: #fff; border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+            transform: translate(-50%, -50%); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; z-index: 10;
+        }
+        .model-card:hover { transform: translate(-50%, -60%) scale(1.05); z-index: 100; border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+        
+        .m-brand { font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
+        .m-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
+        .m-price { font-size: 12px; font-weight: 700; font-family: 'DM Mono'; }
+
+        /* Tooltip */
+        .tooltip {
+            display: none; position: absolute; top: -110px; left: 50%; transform: translateX(-50%);
+            width: 180px; background: #1e293b; color: #fff; padding: 12px; border-radius: 8px; font-size: 11px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); pointer-events: none;
+        }
+        .model-card:hover .tooltip { display: block; }
+        .tooltip b { color: var(--accent); display: block; margin-bottom: 4px; }
+
+        /* Legend */
+        .legend { display: flex; gap: 25px; margin-top: 40px; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+        .dot { width: 12px; height: 12px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>US Air Purifier Market Positioning</h1>
+            <p>Performance (CADR/Coverage) vs. Market Price (USD) | 2025–2026 Strategy</p>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Data Source: Amazon & Brand Official Store</div>
+    </div>
+
+    <div class="map-container">
+        <div class="axis-x-line"></div>
+        <div class="axis-y-line"></div>
+        <div class="axis-label label-y">Price (High $1,000 → Low $100)</div>
+        <div class="axis-label label-x">Coverage (Small 200ft² → Whole House 1,500ft²+)</div>
+
+        <div class="zone zone-premium">Premium Performance</div>
+        <div class="zone zone-value">Value / Entry Zone</div>
+
+        <div class="model-card" style="left: 80%; top: 30%; border-top: 4px solid var(--coway);">
+            <div class="m-brand" style="color: var(--coway);">Coway</div>
+            <div class="m-name">Airmega 400</div>
+            <div class="m-price">$749.00</div>
+            <div class="tooltip"><b>Flagship Performance</b>• Coverage: 1,560 sq.ft<br>• Dual GreenHEPA™<br>• Smart Auto Mode</div>
+        </div>
+
+        <div class="model-card" style="left: 65%; top: 45%; border-top: 4px solid var(--coway);">
+            <div class="m-brand" style="color: var(--coway);">Coway</div>
+            <div class="m-name">Airmega 250</div>
+            <div class="m-price">$399.00</div>
+            <div class="tooltip"><b>The Mainstream</b>• Coverage: 930 sq.ft<br>• Slim Design<br>• EZ-pull Filter</div>
+        </div>
+
+        <div class="model-card" style="left: 30%; top: 75%; border-top: 4px solid var(--coway);">
+            <div class="m-brand" style="color: var(--coway);">Coway</div>
+            <div class="m-name">Airmega 150</div>
+            <div class="m-price">$189.00</div>
+            <div class="tooltip"><b>Entry Specialist</b>• Coverage: 214 sq.ft<br>• Award-winning Design<br>• Multi-stage Filtration</div>
+        </div>
+
+        <div class="model-card" style="left: 85%; top: 20%; border-top: 4px solid var(--rabbitair);">
+            <div class="m-brand" style="color: var(--rabbitair);">Rabbit Air</div>
+            <div class="m-name">Minus A3</div>
+            <div class="m-price">$819.00</div>
+            <div class="tooltip"><b>Ultra Premium</b>• Customized Filters<br>• Wall-mountable<br>• WiFi & APP Control</div>
+        </div>
+
+        <div class="model-card" style="left: 70%; top: 35%; border-top: 4px solid var(--rabbitair);">
+            <div class="m-brand" style="color: var(--rabbitair);">Rabbit Air</div>
+            <div class="m-name">Minus A2</div>
+            <div class="m-price">$619.00</div>
+            <div class="tooltip"><b>Classic Choice</b>• 6-stage Filtration<br>• Artistic Front Panels<br>• Quiet Operation</div>
+        </div>
+
+        <div class="model-card" style="left: 45%; top: 80%; border-top: 4px solid var(--comp);">
+            <div class="m-brand" style="color: var(--comp);">Levoit</div>
+            <div class="m-name">Core 400S</div>
+            <div class="m-price">$219.00</div>
+            <div class="tooltip"><b>Value Competitor</b>• Smart Control<br>• High Volume Sales<br>• Basic HEPA</div>
+        </div>
+
+        <div class="model-card" style="left: 90%; top: 40%; border-top: 4px solid var(--comp);">
+            <div class="m-brand" style="color: var(--comp);">Blueair</div>
+            <div class="m-name">Protect 7770i</div>
+            <div class="m-price">$659.00</div>
+            <div class="tooltip"><b>High-End Competitor</b>• GermShield Tech<br>• SpiralAir Design<br>• Premium Build</div>
+        </div>
+
+        <div class="model-card" style="left: 55%; top: 60%; border-top: 4px solid var(--comp);">
+            <div class="m-brand" style="color: var(--comp);">Dyson</div>
+            <div class="m-name">Purifier Cool TP07</div>
+            <div class="m-price">$549.00</div>
+            <div class="tooltip"><b>Premium Brand</b>• Fan + Purifier<br>• HEPA H13 Sealed<br>• Design Focus</div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="dot" style="background: var(--coway);"></div> Our Brand (Coway)</div>
+        <div class="legend-item"><div class="dot" style="background: var(--rabbitair);"></div> Our Brand (Rabbit Air)</div>
+        <div class="legend-item"><div class="dot" style="background: var(--comp);"></div> Competitors (Levoit, Blueair, Dyson)</div>
+    </div>
+
+</body>
+</html>
