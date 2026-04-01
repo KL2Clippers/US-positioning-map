@@ -9,18 +9,17 @@
         :root {
             --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --text-muted: #64748b;
             --border: #e2e8f0; --accent: #4a9fff;
-            --coway: #00d4aa; --rabbitair: #a78bfa; --levoit: #ff6b6b; --blueair: #4a9fff;
+            --coway: #00d4aa; --rabbitair: #a78bfa; --levoit: #ff6b6b; --blueair: #4a9fff; --shark: #fbbf24;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; padding: 40px; min-height: 100vh; }
+        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; padding: 30px; min-height: 100vh; }
         
-        .header { margin-bottom: 30px; border-bottom: 2px solid #1e293b; padding-bottom: 15px; }
-        .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #1e293b; }
-        .header p { font-size: 14px; color: var(--text-muted); margin-top: 5px; }
+        .header { margin-bottom: 20px; border-bottom: 2px solid #1e293b; padding-bottom: 10px; }
+        .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #1e293b; }
 
         .map-container {
-            width: 100%; height: 750px; background: var(--card); border: 2px solid #1e293b;
-            border-radius: 12px; position: relative; padding: 80px; box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            width: 100%; height: 850px; background: var(--card); border: 2px solid #1e293b;
+            border-radius: 12px; position: relative; padding: 60px; box-shadow: 0 20px 40px rgba(0,0,0,0.05);
             margin: 0 auto; overflow: visible;
         }
 
@@ -30,180 +29,145 @@
         .axis-x-line::after { content: ''; position: absolute; right: -10px; top: -6px; border-left: 12px solid #1e293b; border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
         .axis-y-line::after { content: ''; position: absolute; top: -10px; left: -6px; border-bottom: 12px solid #1e293b; border-left: 8px solid transparent; border-right: 8px solid transparent; }
 
-        .axis-label { position: absolute; font-weight: 800; font-size: 15px; text-transform: uppercase; color: #1e293b; }
+        .axis-label { position: absolute; font-weight: 800; font-size: 14px; text-transform: uppercase; color: #1e293b; }
         .label-y { left: 25px; top: 50%; transform: rotate(-90deg) translateX(50%); }
         .label-x { bottom: 35px; left: 50%; transform: translateX(-50%); }
 
-        /* Zones */
-        .zone { position: absolute; display: flex; padding: 20px; font-size: 12px; font-weight: 800; text-transform: uppercase; pointer-events: none; }
-        .zone-premium { top: 80px; right: 80px; width: 45%; height: 45%; background: rgba(255,179,64,0.05); border: 1.5px dashed rgba(255,179,64,0.3); border-radius: 0 0 0 40px; color: #ffb340; justify-content: flex-end; }
-        .zone-value { bottom: 80px; left: 80px; width: 40%; height: 40%; background: rgba(0,212,170,0.05); border: 1.5px dashed rgba(0,212,170,0.3); border-radius: 0 40px 0 0; color: #00d4aa; align-items: flex-end; }
+        /* Segment Zones */
+        .zone { position: absolute; display: flex; padding: 15px; font-size: 11px; font-weight: 800; text-transform: uppercase; pointer-events: none; }
+        .zone-premium { top: 80px; right: 80px; width: 40%; height: 40%; background: rgba(255,179,64,0.04); border: 1.5px dashed rgba(255,179,64,0.2); color: #ffb340; justify-content: flex-end; }
+        .zone-value { bottom: 80px; left: 80px; width: 40%; height: 35%; background: rgba(0,212,170,0.04); border: 1.5px dashed rgba(0,212,170,0.2); color: #00d4aa; align-items: flex-end; }
 
         /* Points and Tooltips */
-        .point-wrapper { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 10; transition: 0.3s; }
-        .point-wrapper:hover { z-index: 100; transform: translate(-50%, -60%) scale(1.1); }
+        .p-wrap { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 10; transition: 0.2s; }
+        .p-wrap:hover { z-index: 100; transform: translate(-50%, -60%) scale(1.1); }
 
-        .model-card {
-            width: 140px; background: #fff; border: 1px solid var(--border);
-            border-radius: 10px; padding: 10px; box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        .m-card {
+            width: 130px; background: #fff; border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .m-brand { font-size: 9px; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
-        .m-name { font-size: 12px; font-weight: 700; color: #1e293b; }
-        .m-price { font-size: 11px; font-weight: 700; color: var(--text-muted); font-family: 'DM Mono'; }
+        .m-brand { font-size: 8px; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
+        .m-name { font-size: 11px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-price { font-size: 10px; font-weight: 700; color: var(--text-muted); font-family: 'DM Mono'; }
 
-        /* Floating Info Box (말레이시아 스타일) */
+        /* Tooltip (Malaysia Style) */
         .info-box {
-            visibility: hidden; opacity: 0; position: absolute; left: 150px; top: -50px;
-            width: 260px; background: #fff; border-radius: 16px; padding: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); border-top: 5px solid var(--accent);
+            visibility: hidden; opacity: 0; position: absolute; left: 140px; top: -40px;
+            width: 240px; background: #fff; border-radius: 12px; padding: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2); border-top: 4px solid var(--accent);
             transition: 0.3s; z-index: 200; pointer-events: none;
         }
-        .point-wrapper:hover .info-box { visibility: visible; opacity: 1; transform: translateX(10px); }
-        
-        .info-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-        .info-price-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
-        .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-        .info-value { font-size: 16px; font-weight: 800; color: var(--accent); }
-        
-        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .spec-item { background: #f1f5f9; padding: 8px; border-radius: 8px; text-align: center; }
-        .spec-val { display: block; font-size: 14px; font-weight: 700; }
-        .spec-lab { font-size: 10px; color: var(--text-muted); }
+        .p-wrap:hover .info-box { visibility: visible; opacity: 1; transform: translateX(10px); }
+        .info-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 5px; }
+        .spec-row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 5px 0; font-size: 12px; }
+        .spec-label { color: var(--text-muted); }
+        .spec-value { font-weight: 700; color: var(--accent); }
 
-        .feature-list { list-style: none; font-size: 11px; color: #475569; }
-        .feature-list li { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 5px; }
-        .feature-list li::before { content: "•"; color: var(--accent); font-weight: bold; }
-
-        .legend { display: flex; gap: 30px; margin-top: 40px; justify-content: center; background: #fff; padding: 20px; border-radius: 50px; border: 1px solid var(--border); width: fit-content; margin-left: auto; margin-right: auto; }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
-        .dot { width: 12px; height: 12px; border-radius: 3px; }
+        /* Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px; justify-content: center; background: #fff; padding: 15px 30px; border-radius: 50px; border: 1px solid var(--border); width: fit-content; margin-left: auto; margin-right: auto; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
+        .dot { width: 10px; height: 10px; border-radius: 3px; }
 
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>USA Air Purifier Market Positioning</h1>
-        <p>Portfolio Strategy: CADR Performance vs. MSRP (USD) | 2026 Analysis</p>
+        <h1>US Air Purifier Market Positioning Matrix</h1>
+        <p>Market Price (MSRP USD) vs. Performance (Coverage sq.ft) | 2026 Strategy Map</p>
     </div>
 
     <div class="map-container">
         <div class="axis-x-line"></div>
         <div class="axis-y-line"></div>
         <div class="axis-label label-y">Price (High MSRP)</div>
-        <div class="axis-label label-x">Performance (CADR / Coverage)</div>
+        <div class="axis-label label-x">Coverage (Small ↔ Whole House)</div>
 
-        <div class="zone zone-premium">Premium Segment</div>
-        <div class="zone zone-value">Value Segment</div>
+        <div class="zone zone-premium">Ultra-Premium Segment</div>
+        <div class="zone zone-value">Value / Entry Segment</div>
 
-        <div class="point-wrapper" style="left: 78%; top: 32%;">
-            <div class="model-card" style="border-top: 4px solid var(--coway);">
-                <span class="m-brand" style="color: var(--coway);">Coway</span>
-                <div class="m-name">Airmega 400</div>
-                <div class="m-price">$749.00</div>
-            </div>
-            <div class="info-box" style="border-top-color: var(--coway);">
-                <span class="m-brand" style="color: var(--coway);">Coway</span>
-                <h3>Airmega 400</h3>
-                <div class="info-price-row">
-                    <span class="info-label">출시가격</span>
-                    <span class="info-value">USD 749</span>
-                </div>
-                <div class="spec-grid">
-                    <div class="spec-item"><span class="spec-val">1,560ft²</span><span class="spec-lab">Coverage</span></div>
-                    <div class="spec-item"><span class="spec-val">340/350</span><span class="spec-lab">CADR</span></div>
-                </div>
-                <ul class="feature-list">
-                    <li>Dual Suction 그린HEPA™ 탑재</li>
-                    <li>실시간 공기질 모니터링 (Ring)</li>
-                    <li>에코/취침 스마트 모드</li>
-                    <li>Washable 프리필터 시스템</li>
-                </ul>
-            </div>
-        </div>
+        <script>
+            const cowayData = [
+                { name: "ProX", price: 999, cov: 2148, left: 95, top: 10 },
+                { name: "400S", price: 649, cov: 1560, left: 80, top: 30 },
+                { name: "400", price: 749, cov: 1560, left: 80, top: 22 },
+                { name: "300S", price: 549, cov: 1256, left: 70, top: 40 },
+                { name: "250S", price: 449, cov: 930, left: 60, top: 50 },
+                { name: "250", price: 399, cov: 930, left: 60, top: 58 },
+                { name: "AP-1512HH", price: 229, cov: 361, left: 35, top: 75 },
+                { name: "200M", price: 229, cov: 361, left: 35, top: 80 },
+                { name: "160", price: 229, cov: 214, left: 25, top: 78 },
+                { name: "150", price: 189, cov: 214, left: 25, top: 85 },
+                { name: "100", price: 129, cov: 810, left: 55, top: 92 }
+            ];
 
-        <div class="point-wrapper" style="left: 28%; top: 76%;">
-            <div class="model-card" style="border-top: 4px solid var(--coway);">
-                <span class="m-brand" style="color: var(--coway);">Coway</span>
-                <div class="m-name">Airmega 150</div>
-                <div class="m-price">$189.00</div>
-            </div>
-            <div class="info-box" style="border-top-color: var(--coway);">
-                <span class="m-brand" style="color: var(--coway);">Coway</span>
-                <h3>Airmega 150</h3>
-                <div class="info-price-row">
-                    <span class="info-label">출시가격</span>
-                    <span class="info-value">USD 189</span>
-                </div>
-                <div class="spec-grid">
-                    <div class="spec-item"><span class="spec-val">214ft²</span><span class="spec-lab">Coverage</span></div>
-                    <div class="spec-item"><span class="spec-val">138/161</span><span class="spec-lab">CADR</span></div>
-                </div>
-                <ul class="feature-list">
-                    <li>EZ-pull 카트리지형 필터 교체</li>
-                    <li>iF/Red Dot 디자인 어워드 수상</li>
-                    <li>소형 주거공간 최적화 설계</li>
-                </ul>
-            </div>
-        </div>
+            const levoitData = [
+                { name: "EverestAir", price: 499, cov: 1395, left: 75, top: 45 },
+                { name: "Core 600S", price: 299, cov: 635, left: 50, top: 68 },
+                { name: "Core 400S", price: 219, cov: 403, left: 40, top: 82 },
+                { name: "Core 300S", price: 149, cov: 219, left: 25, top: 90 },
+                { name: "Vital 200S", price: 189, cov: 380, left: 38, top: 87 }
+            ];
 
-        <div class="point-wrapper" style="left: 85%; top: 22%;">
-            <div class="model-card" style="border-top: 4px solid var(--rabbitair);">
-                <span class="m-brand" style="color: var(--rabbitair);">Rabbit Air</span>
-                <div class="m-name">Minus A3</div>
-                <div class="m-price">$819.00</div>
-            </div>
-            <div class="info-box" style="border-top-color: var(--rabbitair);">
-                <span class="m-brand" style="color: var(--rabbitair);">Rabbit Air</span>
-                <h3>Minus A3</h3>
-                <div class="info-price-row">
-                    <span class="info-label">출시가격</span>
-                    <span class="info-value">USD 819</span>
-                </div>
-                <div class="spec-grid">
-                    <div class="spec-item"><span class="spec-val">1,070ft²</span><span class="spec-lab">Coverage</span></div>
-                    <div class="spec-item"><span class="spec-val">250+</span><span class="spec-lab">CADR</span></div>
-                </div>
-                <ul class="feature-list">
-                    <li>벽걸이/스탠드 겸용 디자인</li>
-                    <li>6단계 맞춤형 필터 시스템</li>
-                    <li>초저소음 BLDC 모터 적용</li>
-                    <li>예술적 전면 패널 교체 가능</li>
-                </ul>
-            </div>
-        </div>
+            const blueairData = [
+                { name: "Protect 7770i", price: 639, cov: 674, left: 52, top: 32 },
+                { name: "Protect 7470i", price: 499, cov: 418, left: 40, top: 46 },
+                { name: "Blue Pure 211i", price: 349, cov: 635, left: 50, top: 62 },
+                { name: "Blue Pure 411i", price: 139, cov: 219, left: 25, top: 93 }
+            ];
 
-        <div class="point-wrapper" style="left: 48%; top: 82%;">
-            <div class="model-card" style="border-top: 4px solid var(--levoit);">
-                <span class="m-brand" style="color: var(--levoit);">Levoit</span>
-                <div class="m-name">Core 400S</div>
-                <div class="m-price">$219.00</div>
-            </div>
-            <div class="info-box" style="border-top-color: var(--levoit);">
-                <span class="m-brand" style="color: var(--levoit);">Levoit</span>
-                <h3>Core 400S</h3>
-                <div class="info-price-row">
-                    <span class="info-label">출시가격</span>
-                    <span class="info-value">USD 219</span>
-                </div>
-                <div class="spec-grid">
-                    <div class="spec-item"><span class="spec-val">403ft²</span><span class="spec-lab">Coverage</span></div>
-                    <div class="spec-item"><span class="spec-val">260</span><span class="spec-lab">CADR</span></div>
-                </div>
-                <ul class="feature-list">
-                    <li>VortexAir™ 360도 흡입</li>
-                    <li>VeSync 앱 기반 스마트 제어</li>
-                    <li>Amazon 청정기 카테고리 1위</li>
-                </ul>
-            </div>
-        </div>
+            const sharkData = [
+                { name: "NeverChange MAX", price: 399, cov: 1400, left: 78, top: 55 },
+                { name: "NeverChange", price: 249, cov: 650, left: 52, top: 72 },
+                { name: "CleanSense 500", price: 199, cov: 500, left: 45, top: 88 }
+            ];
+
+            const rabbitData = [
+                { name: "Minus A3", price: 819, cov: 1070, left: 65, top: 15 },
+                { name: "Minus A2", price: 619, cov: 815, left: 55, top: 35 }
+            ];
+
+            function createPoints(data, color, brand) {
+                data.forEach(item => {
+                    document.write(`
+                        <div class="p-wrap" style="left: ${item.left}%; top: ${item.top}%;">
+                            <div class="m-card" style="border-top: 3px solid ${color};">
+                                <span class="m-brand" style="color: ${color};">${brand}</span>
+                                <div class="m-name">${item.name}</div>
+                                <div class="m-price">$${item.price}</div>
+                            </div>
+                            <div class="info-box" style="border-top-color: ${color};">
+                                <span class="m-brand" style="color: ${color};">${brand}</span>
+                                <h3>${item.name}</h3>
+                                <div class="spec-row"><span class="spec-label">Price</span><span class="spec-value">$${item.price}</span></div>
+                                <div class="spec-row"><span class="spec-label">Coverage</span><span class="spec-value">${item.cov} sq.ft</span></div>
+                                <div style="font-size:10px; color:#64748b; margin-top:10px;">• Market Positioning Reference Data 2026</div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+
+            createPoints(cowayData, "var(--coway)", "Coway");
+            createPoints(levoitData, "var(--levoit)", "Levoit");
+            createPoints(blueairData, "var(--blueair)", "Blueair");
+            createPoints(sharkData, "var(--shark)", "Shark");
+            createPoints(rabbitData, "var(--rabbitair)", "RabbitAir");
+        </script>
+
     </div>
 
     <div class="legend">
         <div class="legend-item"><div class="dot" style="background: var(--coway);"></div> Coway</div>
-        <div class="legend-item"><div class="dot" style="background: var(--rabbitair);"></div> Rabbit Air</div>
-        <div class="legend-item"><div class="dot" style="background: var(--levoit);"></div> Levoit (Comp)</div>
+        <div class="legend-item"><div class="dot" style="background: var(--rabbitair);"></div> RabbitAir</div>
+        <div class="legend-item"><div class="dot" style="background: var(--levoit);"></div> Levoit</div>
+        <div class="legend-item"><div class="dot" style="background: var(--blueair);"></div> Blueair</div>
+        <div class="legend-item"><div class="dot" style="background: var(--shark);"></div> Shark</div>
     </div>
+
+    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
+        * MSRP 기준이며 실시간 할인가에 따라 위치가 변동될 수 있습니다. | 성능 지표: AHAM Verifide / Manufacturer Claims sq.ft
+    </p>
 
 </body>
 </html>
