@@ -3,170 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US Air Purifier Market Positioning Map</title>
+    <title>GLOBAL OPS — US Market Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=DM+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --text-muted: #64748b;
             --border: #e2e8f0; --accent: #4a9fff;
-            --coway: #00d4aa; --rabbitair: #a78bfa; --levoit: #ff6b6b; --blueair: #4a9fff; --shark: #fbbf24;
+            --coway: #00d4aa; --levoit: #ff6b6b; --blueair: #4a9fff; --shark: #fbbf24; --rabbit: #a78bfa;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; padding: 30px; min-height: 100vh; }
+        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; padding: 40px; min-height: 100vh; overflow-x: hidden; }
         
-        .header { margin-bottom: 20px; border-bottom: 2px solid #1e293b; padding-bottom: 10px; }
-        .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #1e293b; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #1e293b; padding-bottom: 15px; }
+        .logo-section h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: #1e293b; }
+        .country-flag { background: #fff; padding: 5px 15px; border: 1px solid var(--border); border-radius: 8px; font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 14px; }
 
+        /* Map System */
         .map-container {
             width: 100%; height: 850px; background: var(--card); border: 2px solid #1e293b;
-            border-radius: 12px; position: relative; padding: 60px; box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            margin: 0 auto; overflow: visible;
+            border-radius: 12px; position: relative; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            margin: 0 auto;
         }
 
-        /* Axes */
+        /* Axis Lines and Ticks */
         .axis-x-line { position: absolute; bottom: 80px; left: 80px; right: 80px; height: 3px; background: #1e293b; z-index: 5; }
         .axis-y-line { position: absolute; left: 80px; top: 80px; bottom: 80px; width: 3px; background: #1e293b; z-index: 5; }
-        .axis-x-line::after { content: ''; position: absolute; right: -10px; top: -6px; border-left: 12px solid #1e293b; border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
-        .axis-y-line::after { content: ''; position: absolute; top: -10px; left: -6px; border-bottom: 12px solid #1e293b; border-left: 8px solid transparent; border-right: 8px solid transparent; }
-
-        .axis-label { position: absolute; font-weight: 800; font-size: 14px; text-transform: uppercase; color: #1e293b; }
+        .axis-label { position: absolute; font-weight: 800; font-size: 13px; text-transform: uppercase; color: #1e293b; }
         .label-y { left: 25px; top: 50%; transform: rotate(-90deg) translateX(50%); }
         .label-x { bottom: 35px; left: 50%; transform: translateX(-50%); }
 
-        /* Segment Zones */
-        .zone { position: absolute; display: flex; padding: 15px; font-size: 11px; font-weight: 800; text-transform: uppercase; pointer-events: none; }
-        .zone-premium { top: 80px; right: 80px; width: 40%; height: 40%; background: rgba(255,179,64,0.04); border: 1.5px dashed rgba(255,179,64,0.2); color: #ffb340; justify-content: flex-end; }
-        .zone-value { bottom: 80px; left: 80px; width: 40%; height: 35%; background: rgba(0,212,170,0.04); border: 1.5px dashed rgba(0,212,170,0.2); color: #00d4aa; align-items: flex-end; }
+        /* Value Ticks (수치 추가) */
+        .tick-x { position: absolute; bottom: 60px; font-family: 'DM Mono'; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .tick-y { position: absolute; left: 50px; font-family: 'DM Mono'; font-size: 11px; font-weight: 600; color: var(--text-muted); }
 
-        /* Points and Tooltips */
-        .p-wrap { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 10; transition: 0.2s; }
-        .p-wrap:hover { z-index: 100; transform: translate(-50%, -60%) scale(1.1); }
+        /* Solid Segment Zones */
+        .zone { position: absolute; display: flex; padding: 25px; font-size: 12px; font-weight: 800; text-transform: uppercase; pointer-events: none; border-radius: 20px; }
+        .zone-premium { top: 80px; right: 80px; width: 45%; height: 45%; background: rgba(255, 179, 64, 0.06); border: 2px dashed rgba(255, 179, 64, 0.2); color: #b45309; justify-content: flex-end; align-items: flex-start; }
+        .zone-value { bottom: 80px; left: 80px; width: 40%; height: 40%; background: rgba(0, 212, 170, 0.06); border: 2px dashed rgba(0, 212, 170, 0.2); color: #065f46; align-items: flex-end; }
+        .zone-mid { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40%; height: 35%; border: 1px solid rgba(0,0,0,0.05); color: #64748b; align-items: center; justify-content: center; font-style: italic; }
+
+        /* Interactive Points */
+        .p-wrap { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 10; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .p-wrap:hover { z-index: 1000; transform: translate(-50%, -60%) scale(1.15); }
 
         .m-card {
-            width: 130px; background: #fff; border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 120px; background: #fff; border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center;
         }
-        .m-brand { font-size: 8px; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
-        .m-name { font-size: 11px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-brand { font-size: 8px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 2px; }
+        .m-name { font-size: 11px; font-weight: 700; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .m-price { font-size: 10px; font-weight: 700; color: var(--text-muted); font-family: 'DM Mono'; }
 
-        /* Tooltip (Malaysia Style) */
+        /* Executive Pop-up (Malaysia Style + Image) */
         .info-box {
-            visibility: hidden; opacity: 0; position: absolute; left: 140px; top: -40px;
-            width: 240px; background: #fff; border-radius: 12px; padding: 15px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2); border-top: 4px solid var(--accent);
-            transition: 0.3s; z-index: 200; pointer-events: none;
+            visibility: hidden; opacity: 0; position: absolute; left: 130px; top: -100px;
+            width: 280px; background: #fff; border-radius: 16px; padding: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.25); border-top: 6px solid var(--accent);
+            transition: 0.3s; z-index: 2000; pointer-events: none;
         }
-        .p-wrap:hover .info-box { visibility: visible; opacity: 1; transform: translateX(10px); }
-        .info-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 5px; }
-        .spec-row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 5px 0; font-size: 12px; }
-        .spec-label { color: var(--text-muted); }
-        .spec-value { font-weight: 700; color: var(--accent); }
+        .p-wrap:hover .info-box { visibility: visible; opacity: 1; transform: translateX(15px); }
+        
+        .product-img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 15px; background: #f8fafc; border-radius: 12px; }
+        .info-box h3 { font-size: 19px; font-weight: 800; margin-bottom: 5px; color: #0f172a; }
+        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .spec-item { background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center; }
+        .spec-val { display: block; font-size: 15px; font-weight: 800; color: var(--accent); }
+        .spec-lab { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
 
-        /* Legend */
-        .legend { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px; justify-content: center; background: #fff; padding: 15px 30px; border-radius: 50px; border: 1px solid var(--border); width: fit-content; margin-left: auto; margin-right: auto; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
-        .dot { width: 10px; height: 10px; border-radius: 3px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 40px; justify-content: center; background: #fff; padding: 15px 30px; border-radius: 50px; border: 1px solid var(--border); width: fit-content; margin-left: auto; margin-right: auto; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; }
+        .dot { width: 12px; height: 12px; border-radius: 3px; }
 
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>US Air Purifier Market Positioning Matrix</h1>
-        <p>Market Price (MSRP USD) vs. Performance (Coverage sq.ft) | 2026 Strategy Map</p>
+        <div class="logo-section">
+            <h1>US Air Purifier Matrix v3.0</h1>
+            <p style="color:var(--text-muted); font-size:14px;">Price Index vs. Performance Coverage | GLOBAL OPS Intelligence</p>
+        </div>
+        <div class="country-flag">
+            <span style="font-size:20px;">🇺🇸</span> United States Market
+        </div>
     </div>
 
     <div class="map-container">
         <div class="axis-x-line"></div>
         <div class="axis-y-line"></div>
-        <div class="axis-label label-y">Price (High MSRP)</div>
-        <div class="axis-label label-x">Coverage (Small ↔ Whole House)</div>
+        <div class="axis-label label-y">Price (MSRP USD)</div>
+        <div class="axis-label label-x">Coverage Performance (sq.ft)</div>
 
-        <div class="zone zone-premium">Ultra-Premium Segment</div>
-        <div class="zone zone-value">Value / Entry Segment</div>
+        <div class="tick-y" style="top: 80px;">$1,000</div>
+        <div class="tick-y" style="top: 260px;">$750</div>
+        <div class="tick-y" style="top: 440px;">$500</div>
+        <div class="tick-y" style="top: 620px;">$250</div>
+        <div class="tick-y" style="bottom: 80px;">$0</div>
+
+        <div class="tick-x" style="left: 80px;">0</div>
+        <div class="tick-x" style="left: 300px;">500</div>
+        <div class="tick-x" style="left: 520px;">1,000</div>
+        <div class="tick-x" style="left: 740px;">1,500</div>
+        <div class="tick-x" style="right: 80px;">2,000+</div>
+
+        <div class="zone zone-premium">Premium Segment</div>
+        <div class="zone zone-value">Value Segment</div>
+        <div class="zone zone-mid">Mid-Range Competitive Zone</div>
 
         <script>
-            const cowayData = [
-                { name: "ProX", price: 999, cov: 2148, left: 95, top: 10 },
-                { name: "400S", price: 649, cov: 1560, left: 80, top: 30 },
-                { name: "400", price: 749, cov: 1560, left: 80, top: 22 },
-                { name: "300S", price: 549, cov: 1256, left: 70, top: 40 },
-                { name: "250S", price: 449, cov: 930, left: 60, top: 50 },
-                { name: "250", price: 399, cov: 930, left: 60, top: 58 },
-                { name: "AP-1512HH", price: 229, cov: 361, left: 35, top: 75 },
-                { name: "200M", price: 229, cov: 361, left: 35, top: 80 },
-                { name: "160", price: 229, cov: 214, left: 25, top: 78 },
-                { name: "150", price: 189, cov: 214, left: 25, top: 85 },
-                { name: "100", price: 129, cov: 810, left: 55, top: 92 }
+            // Core US Market Dataset 2026
+            // 이미지 소스는 공식몰 및 대표 이미지를 참조한 placeholder 경로입니다.
+            const marketData = [
+                // COWAY
+                { b: "Coway", n: "Airmega ProX", p: 999, c: 2148, l: 94, t: 10, img: "https://cowaymega.com/cdn/shop/files/ProX_White_Front_1000x1000.png" },
+                { b: "Coway", n: "Airmega 400S", p: 649, c: 1560, l: 80, t: 32, img: "https://cowaymega.com/cdn/shop/products/400S_White_Front_1000x1000.png" },
+                { b: "Coway", n: "Airmega 300S", p: 549, c: 1256, l: 70, t: 45, img: "https://cowaymega.com/cdn/shop/products/300S_White_Front_1000x1000.png" },
+                { b: "Coway", n: "Airmega 250S", p: 449, c: 930, l: 60, t: 58, img: "https://cowaymega.com/cdn/shop/products/250S_Front_1000x1000.png" },
+                { b: "Coway", n: "AP-1512HH", p: 229, c: 361, l: 30, t: 82, img: "https://cowaymega.com/cdn/shop/products/Mighty_White_Front_1000x1000.png" },
+                { b: "Coway", n: "Airmega 150", p: 189, c: 214, l: 20, t: 88, img: "https://cowaymega.com/cdn/shop/products/150_White_Front_1000x1000.png" },
+                
+                // LEVOIT
+                { b: "Levoit", n: "EverestAir", p: 499, c: 1395, l: 75, t: 50, img: "https://levoit.com/cdn/shop/files/EverestAir_1.png" },
+                { b: "Levoit", n: "Core 600S", p: 299, c: 635, l: 45, t: 75, img: "https://levoit.com/cdn/shop/products/Core600S_1.png" },
+                { b: "Levoit", n: "Core 400S", p: 219, c: 403, l: 35, t: 84, img: "https://levoit.com/cdn/shop/products/Core400S_1.png" },
+
+                // BLUEAIR
+                { b: "Blueair", n: "Protect 7770i", p: 639, c: 674, l: 50, t: 35, img: "https://www.blueair.com/dw/image/v2/BCHX_PRD/on/demandware.static/-/Sites-master-catalog-blueair/default/dw10d5f81f/images/hi-res/Protect_7770i.png" },
+                { b: "Blueair", n: "Pure 211i Max", p: 349, c: 635, l: 48, t: 65, img: "https://www.blueair.com/dw/image/v2/BCHX_PRD/on/demandware.static/-/Sites-master-catalog-blueair/default/dw769539f0/images/hi-res/Blue_Pure_211i_Max.png" },
+
+                // SHARK
+                { b: "Shark", n: "NeverChange MAX", p: 399, c: 1400, l: 76, t: 62, img: "https://direct.sharkclean.com/cdn/shop/files/HP302_Shark_NeverChange_MAX.png" },
+                { b: "Shark", n: "NeverChange", p: 249, c: 650, l: 42, t: 78, img: "https://direct.sharkclean.com/cdn/shop/files/HP102_Shark_NeverChange.png" },
+
+                // RABBIT AIR
+                { b: "RabbitAir", n: "Minus A3", p: 819, c: 1070, l: 65, t: 20, img: "https://www.rabbitair.com/cdn/shop/files/A3-White-Front_600x.png" }
             ];
 
-            const levoitData = [
-                { name: "EverestAir", price: 499, cov: 1395, left: 75, top: 45 },
-                { name: "Core 600S", price: 299, cov: 635, left: 50, top: 68 },
-                { name: "Core 400S", price: 219, cov: 403, left: 40, top: 82 },
-                { name: "Core 300S", price: 149, cov: 219, left: 25, top: 90 },
-                { name: "Vital 200S", price: 189, cov: 380, left: 38, top: 87 }
-            ];
+            const colors = { Coway: "var(--coway)", Levoit: "var(--levoit)", Blueair: "var(--blueair)", Shark: "var(--shark)", RabbitAir: "var(--rabbit)" };
 
-            const blueairData = [
-                { name: "Protect 7770i", price: 639, cov: 674, left: 52, top: 32 },
-                { name: "Protect 7470i", price: 499, cov: 418, left: 40, top: 46 },
-                { name: "Blue Pure 211i", price: 349, cov: 635, left: 50, top: 62 },
-                { name: "Blue Pure 411i", price: 139, cov: 219, left: 25, top: 93 }
-            ];
-
-            const sharkData = [
-                { name: "NeverChange MAX", price: 399, cov: 1400, left: 78, top: 55 },
-                { name: "NeverChange", price: 249, cov: 650, left: 52, top: 72 },
-                { name: "CleanSense 500", price: 199, cov: 500, left: 45, top: 88 }
-            ];
-
-            const rabbitData = [
-                { name: "Minus A3", price: 819, cov: 1070, left: 65, top: 15 },
-                { name: "Minus A2", price: 619, cov: 815, left: 55, top: 35 }
-            ];
-
-            function createPoints(data, color, brand) {
-                data.forEach(item => {
-                    document.write(`
-                        <div class="p-wrap" style="left: ${item.left}%; top: ${item.top}%;">
-                            <div class="m-card" style="border-top: 3px solid ${color};">
-                                <span class="m-brand" style="color: ${color};">${brand}</span>
-                                <div class="m-name">${item.name}</div>
-                                <div class="m-price">$${item.price}</div>
-                            </div>
-                            <div class="info-box" style="border-top-color: ${color};">
-                                <span class="m-brand" style="color: ${color};">${brand}</span>
-                                <h3>${item.name}</h3>
-                                <div class="spec-row"><span class="spec-label">Price</span><span class="spec-value">$${item.price}</span></div>
-                                <div class="spec-row"><span class="spec-label">Coverage</span><span class="spec-value">${item.cov} sq.ft</span></div>
-                                <div style="font-size:10px; color:#64748b; margin-top:10px;">• Market Positioning Reference Data 2026</div>
-                            </div>
+            marketData.forEach(m => {
+                document.write(`
+                    <div class="p-wrap" style="left: ${m.l}%; top: ${m.t}%;">
+                        <div class="m-card" style="border-top: 3px solid ${colors[m.b]}">
+                            <span class="m-brand" style="color: ${colors[m.b]}">${m.b}</span>
+                            <div class="m-name">${m.n}</div>
+                            <div class="m-price">$${m.p}</div>
                         </div>
-                    `);
-                });
-            }
-
-            createPoints(cowayData, "var(--coway)", "Coway");
-            createPoints(levoitData, "var(--levoit)", "Levoit");
-            createPoints(blueairData, "var(--blueair)", "Blueair");
-            createPoints(sharkData, "var(--shark)", "Shark");
-            createPoints(rabbitData, "var(--rabbitair)", "RabbitAir");
+                        <div class="info-box" style="border-top-color: ${colors[m.b]}">
+                            <img src="${m.img}" class="product-img" onerror="this.src='https://via.placeholder.com/200x150?text=Product+Image'">
+                            <span class="m-brand" style="color: ${colors[m.b]}">${m.b} Intelligence</span>
+                            <h3>${m.n}</h3>
+                            <div class="spec-grid">
+                                <div class="spec-item"><span class="spec-val">$${m.p}</span><span class="spec-lab">MSRP (USD)</span></div>
+                                <div class="spec-item"><span class="spec-val">${m.c}</span><span class="spec-lab">Coverage (ft²)</span></div>
+                            </div>
+                            <p style="font-size:11px; color:#64748b; margin-top:15px; line-height:1.4;">
+                                • Market segment: ${m.p > 600 ? 'Premium' : 'Mainstream'}<br>
+                                • Performance standard: AHAM Certified
+                            </p>
+                        </div>
+                    </div>
+                `);
+            });
         </script>
-
     </div>
 
     <div class="legend">
         <div class="legend-item"><div class="dot" style="background: var(--coway);"></div> Coway</div>
-        <div class="legend-item"><div class="dot" style="background: var(--rabbitair);"></div> RabbitAir</div>
+        <div class="legend-item"><div class="dot" style="background: var(--rabbit);"></div> RabbitAir</div>
         <div class="legend-item"><div class="dot" style="background: var(--levoit);"></div> Levoit</div>
         <div class="legend-item"><div class="dot" style="background: var(--blueair);"></div> Blueair</div>
         <div class="legend-item"><div class="dot" style="background: var(--shark);"></div> Shark</div>
     </div>
 
     <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
-        * MSRP 기준이며 실시간 할인가에 따라 위치가 변동될 수 있습니다. | 성능 지표: AHAM Verifide / Manufacturer Claims sq.ft
+        * MSRP 기준이며 실제 리테일가(Amazon/Walmart)와 상이할 수 있습니다. | Data Ref: 2026.Q1 Market Intelligence.
     </p>
 
 </body>
